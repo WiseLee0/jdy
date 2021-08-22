@@ -1,5 +1,5 @@
-import { useCallback, useEffect, useState } from "react";
-type TNode = {
+import { useCallback, useEffect, useMemo, useState } from "react";
+export type TNode = {
   name: string;
   value: unknown;
   children?: TNode[];
@@ -18,10 +18,10 @@ type TData = {
  * @returns
  */
 
-export const useSearchPannel = (origin: TNode[]) => {
+export const useSearchPannel = (origin: TNode[], defaultIdx?: number[]) => {
   const [data, setData] = useState<TData[][]>([]);
   const [cache, setCache] = useState<TNode[]>([]);
-  const [idx, setIdx] = useState<number[]>([]);
+  let [idx, setIdx] = useState<number[]>([]);
 
   function dfs(origin: TNode[], suffix: number, ans: TNode[][], count: number) {
     if (!origin.length) return;
@@ -42,9 +42,16 @@ export const useSearchPannel = (origin: TNode[]) => {
   useEffect(() => {
     let ans: TNode[][] = [];
     setCache(origin);
-    dfs(origin, 0, ans, 0);
-    setData(ans);
-    setIdx(new Array(ans.length).fill(0));
+    if (!defaultIdx) {
+      dfs(origin, 0, ans, 0);
+      setData(ans);
+      setIdx(new Array(ans.length).fill(0));
+    } else {
+      idx = defaultIdx;
+      dfs(origin, idx[0], ans, 0);
+      setData(ans);
+      setIdx(idx);
+    }
   }, [origin]);
   const setSelectValue = (count: number, index: number) => {
     let ans: TNode[][] = [];
@@ -55,25 +62,33 @@ export const useSearchPannel = (origin: TNode[]) => {
   };
   const getName = useCallback(() => {
     let data = cache.slice();
+    if (!data.length) return;
     const ans = [];
     for (const index of idx) {
-      ans.push(data[index] && data[index].name);
-      if (data[index].children) {
-        data = data[index].children!;
+      if (data[index]) {
+        ans.push(data[index].name);
+        if (data[index].children) {
+          data = data[index].children!;
+        }
       }
     }
     return ans;
   }, [cache, idx]);
   const getValue = useCallback(() => {
     let data = cache.slice();
+    if (!data.length) return;
     const ans = [];
     for (const index of idx) {
-      ans.push(data[index] && data[index].value);
-      if (data[index].children) {
-        data = data[index].children!;
+      if (data[index]) {
+        ans.push(data[index].value);
+        if (data[index].children) {
+          data = data[index].children!;
+        }
       }
     }
     return ans;
   }, [cache, idx]);
-  return [data, setSelectValue, getName, getValue] as const;
+
+  const isReady = cache.length > 0 ? true : false;
+  return [data, setSelectValue, getName, getValue, isReady] as const;
 };

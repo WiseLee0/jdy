@@ -1,120 +1,148 @@
 import styled from "@emotion/styled";
 import React, { memo, useEffect, useRef } from "react";
-import { cityList } from "./data";
-import { useSearchPannel } from "./hooks";
+import { TNode, useSearchPannel } from "./hooks";
 const CELLHEIGHT = 40;
 type Props = {
   setSearchContent: (content: string) => void;
   setShow: (show: boolean) => void;
   setExist: (show: boolean) => void;
+  defaultIdx?: number[];
+  cityList: TNode[];
 };
-const SearchPannel = memo(({ setSearchContent, setShow, setExist }: Props) => {
-  const ref = useRef<HTMLDivElement[]>([]);
-  const [cityData, setSelectValue, getName] = useSearchPannel(cityList);
-  useEffect(() => {
-    setSearchContent(getName().join("-"));
-  }, [getName]);
-  /**
-   * 处理滚动事件
-   */
-  const onHandleScroll = debounce((idx: number) => {
-    const dom = ref.current[idx] as unknown as HTMLDivElement;
-    const index = Math.floor(dom.scrollTop / 40);
-    const end = index * 40;
-    // 改变颜色
-    const selectNode = dom.children[index] as HTMLDivElement;
-    let selectIndex = index;
-    if (selectNode.children.length) return;
+const SearchPannel = memo(
+  ({ setSearchContent, setShow, setExist, defaultIdx, cityList }: Props) => {
+    const ref = useRef<HTMLDivElement[]>([]);
+    const [cityData, setSelectValue, getName, , isReady] = useSearchPannel(
+      cityList,
+      defaultIdx
+    );
+    useEffect(() => {
+      if (getName()?.length) {
+        setSearchContent(getName()!.join("-"));
+      }
+    }, [getName]);
+    useEffect(() => {
+      onHandleDefaultIdx(cityData);
+    }, [isReady]);
+    /**
+     * 处理滚动事件
+     */
+    const onHandleScroll = debounce((idx: number) => {
+      const dom = ref.current[idx] as unknown as HTMLDivElement;
+      const index = Math.floor(dom.scrollTop / 40);
+      const end = index * 40;
+      // 改变颜色
+      const selectNode = dom.children[index] as HTMLDivElement;
+      let selectIndex = index;
+      if (selectNode.children.length) return;
 
-    for (let i = 0; i < dom.children.length; i++) {
-      const child = dom.children[i] as HTMLDivElement;
-      if (child !== selectNode) child.style.color = "#333";
-      else {
-        child.style.color = "#0db3a6";
-        selectIndex = i;
+      for (let i = 0; i < dom.children.length; i++) {
+        const child = dom.children[i] as HTMLDivElement;
+        if (child !== selectNode) child.style.color = "#333";
+        else {
+          child.style.color = "#0db3a6";
+          selectIndex = i;
+        }
       }
-    }
-    // 改变位置
-    scrollToTop(dom, end, 500, false);
-    setSelectValue(idx, selectIndex);
-    for (let i = idx + 1; i < ref.current.length; i++) {
-      if (ref.current[i]) {
-        scrollToTop(ref.current[i], 0, 500, false);
+      // 改变位置
+      scrollToTop(dom, end, 500, false);
+      setSelectValue(idx, selectIndex);
+      for (let i = idx + 1; i < ref.current.length; i++) {
+        if (ref.current[i]) {
+          scrollToTop(ref.current[i], 0, 500, false);
+        }
       }
-    }
-  });
-  const onHandleClick = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>,
-    idx: number
-  ) => {
-    const dom = ref.current[idx] as unknown as HTMLDivElement;
-    const index = Math.floor(dom.scrollTop / 40);
-    let end = index * 40;
-    const selectNode = event.target as HTMLDivElement;
-    let selectIndex = index;
-    if (selectNode.children.length) return;
+    });
+    const onHandleClick = (
+      event: React.MouseEvent<HTMLDivElement, MouseEvent>,
+      idx: number
+    ) => {
+      const dom = ref.current[idx] as unknown as HTMLDivElement;
+      const index = Math.floor(dom.scrollTop / CELLHEIGHT);
+      let end = index * CELLHEIGHT;
+      const selectNode = event.target as HTMLDivElement;
+      let selectIndex = index;
+      if (selectNode.children.length) return;
 
-    // 改变颜色
-    for (let i = 0; i < dom.children.length; i++) {
-      const child = dom.children[i] as HTMLDivElement;
-      if (child !== selectNode) child.style.color = "#333";
-      else {
-        child.style.color = "#0db3a6";
-        end = i * CELLHEIGHT;
-        selectIndex = i;
+      // 改变颜色
+      for (let i = 0; i < dom.children.length; i++) {
+        const child = dom.children[i] as HTMLDivElement;
+        if (child !== selectNode) child.style.color = "#333";
+        else {
+          child.style.color = "#0db3a6";
+          end = i * CELLHEIGHT;
+          selectIndex = i;
+        }
       }
-    }
-    if (dom.scrollTop == 0) dom.scrollTop = 40;
-    // 改变位置
-    scrollToTop(dom, end, 500, selectIndex - index > 0);
-    setSelectValue(idx, selectIndex);
-    for (let i = idx + 1; i < ref.current.length; i++) {
-      if (ref.current[i]) {
-        scrollToTop(ref.current[i], 0, 500, false);
+      if (dom.scrollTop == 0) {
+        dom.scrollTop = end;
+        return;
       }
-    }
-  };
 
-  return (
-    <Container>
-      <Box>
-        <List>
-          {cityData.map((items, index) => {
-            return (
-              <Group
-                key={index}
-                onScroll={() => onHandleScroll(index)}
-                onClick={(e) => onHandleClick(e, index)}
-                ref={(dom) => {
-                  if (!ref.current.includes(dom!) && dom)
-                    ref.current.push(dom!);
-                }}
-              >
-                {items.map((item) => {
-                  return <Cell key={item.value as number}>{item.name}</Cell>;
-                })}
-              </Group>
-            );
-          })}
-        </List>
-        <LineTop></LineTop>
-        <LineBottom></LineBottom>
-      </Box>
-      <Operate>
-        <div
-          onClick={() => {
-            setExist(false);
-            setShow(false);
-            setSearchContent("");
-          }}
-        >
-          清空
-        </div>
-        <div onClick={() => setShow(false)}>确定</div>
-      </Operate>
-    </Container>
-  );
-});
+      // 改变位置
+      scrollToTop(dom, end, 500, selectIndex - index > 0);
+      setSelectValue(idx, selectIndex);
+      for (let i = idx + 1; i < ref.current.length; i++) {
+        if (ref.current[i]) {
+          scrollToTop(ref.current[i], 0, 500, false);
+        }
+      }
+    };
+    const onHandleDefaultIdx = (data: typeof cityData) => {
+      if (!defaultIdx || !data.length) return;
+      for (let index = 0; index < defaultIdx.length; index++) {
+        const dom = ref.current[index] as unknown as HTMLDivElement;
+        const selectNode = dom.children[defaultIdx[index]] as HTMLDivElement;
+        for (let i = 0; i < dom.children.length; i++) {
+          const child = dom.children[i] as HTMLDivElement;
+          if (child !== selectNode) child.style.color = "#333";
+          else child.style.color = "#0db3a6";
+        }
+        dom.scrollTop = defaultIdx[index] * CELLHEIGHT;
+      }
+    };
+
+    return (
+      <Container>
+        <Box>
+          <List>
+            {cityData.map((items, index) => {
+              return (
+                <Group
+                  key={index}
+                  onScroll={() => onHandleScroll(index)}
+                  onClick={(e) => onHandleClick(e, index)}
+                  ref={(dom) => {
+                    if (!ref.current.includes(dom!) && dom)
+                      ref.current.push(dom!);
+                  }}
+                >
+                  {items.map((item) => {
+                    return <Cell key={item.value as number}>{item.name}</Cell>;
+                  })}
+                </Group>
+              );
+            })}
+          </List>
+          <LineTop></LineTop>
+          <LineBottom></LineBottom>
+        </Box>
+        <Operate>
+          <div
+            onClick={() => {
+              setExist(false);
+              setShow(false);
+              setSearchContent("");
+            }}
+          >
+            清空
+          </div>
+          <div onClick={() => setShow(false)}>确定</div>
+        </Operate>
+      </Container>
+    );
+  }
+);
 function debounce(callback: (...args: any) => void, duration = 200) {
   let timer: null | number = null;
   return (...args: any) => {

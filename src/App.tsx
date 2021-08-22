@@ -1,57 +1,13 @@
-import styled from "@emotion/styled";
-import React, { useRef, useState } from "react";
-import SearchPannel from "./search-pannel";
+import React from "react";
+import Cascade from "./cascade";
+import { cityList } from "./data";
 
 function App() {
-  const [show, setShow] = useState(true);
-  const [exist, setExist] = useState(true);
-  const [searchContent, setSearchContent] = useState("");
-
   return (
-    <Container>
-      <Header>
-        <SearchInput type="text" value={searchContent} readOnly />
-        <i
-          className="iconfont icon-icon-24-xiajiantou"
-          onClick={() => {
-            setShow(!show);
-            setExist(true);
-          }}
-        ></i>
-      </Header>
-      <div style={{ display: show ? "block" : "none" }}>
-        {exist && (
-          <SearchPannel
-            setSearchContent={setSearchContent}
-            setShow={setShow}
-            setExist={setExist}
-          ></SearchPannel>
-        )}
-      </div>
-    </Container>
+    <div style={{ width: "300px" }}>
+      <Cascade defalutIdx={[1, 1, 2]} cityList={cityList}></Cascade>
+    </div>
   );
 }
-const Container = styled.div`
-  width: 300px;
-  border: 1px solid #333;
-`;
-const Header = styled.div`
-  display: flex;
-  align-items: center;
-  background-color: #eee;
-  i {
-    box-sizing: border-box;
-    display: inline-block;
-    width: 30px;
-    text-align: center;
-    line-height: 28px;
-    border: 1px solid #333;
-    cursor: pointer;
-  }
-`;
-const SearchInput = styled.input`
-  width: 270px;
-  height: 30px;
-  box-sizing: border-box;
-`;
+
 export default App;
