@@ -3,14 +3,64 @@ import React from "react";
 import { themeColor } from "../../common/style";
 
 export default function Header() {
+  const onMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const dom = e.currentTarget as HTMLDivElement;
+    const blank = dom.children[1] as HTMLDivElement;
+    const list = dom.children[2] as HTMLDivElement;
+    blank.style.display = "block";
+    list.style.display = "flex";
+  };
+  const onMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+    const dom = e.currentTarget as HTMLDivElement;
+    const blank = dom.children[1] as HTMLDivElement;
+    const list = dom.children[2] as HTMLDivElement;
+    blank.style.display = "none";
+    list.style.display = "none";
+  };
   return (
     <Container>
       <FlexCell>
         <img src="https://blog-assets.jiandaoyun.com/index/logo-pure.png" />
         <div>
           <LinkButton light>首页</LinkButton>
-          <LinkButton arrow>产品功能</LinkButton>
-          <LinkButton arrow>行业案例</LinkButton>
+          <LinkButton
+            arrow
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+          >
+            <span>产品功能</span>
+            <BlockCell></BlockCell>
+            <List>
+              <Cell>在线表单</Cell>
+              <Cell>流程引擎</Cell>
+              <Cell>仪表盘</Cell>
+              <Cell>知识库</Cell>
+              <Cell>团队协作</Cell>
+            </List>
+          </LinkButton>
+          <LinkButton
+            arrow
+            onMouseEnter={onMouseEnter}
+            onMouseLeave={onMouseLeave}
+          >
+            <span>行业案例</span>
+            <BlockCell></BlockCell>
+            <List>
+              <Cell>
+                <span>CRM</span>
+              </Cell>
+              <Cell>
+                <span>疫情防控</span>
+              </Cell>
+              <Cell>进销存</Cell>
+              <Cell>项目管理</Cell>
+              <Cell>供应商管理</Cell>
+              <Cell>设备管理</Cell>
+              <Cell>
+                <span>更多方案</span>
+              </Cell>
+            </List>
+          </LinkButton>
           <LinkButton>定价</LinkButton>
           <LinkButton>定制</LinkButton>
           <LinkButton>学习与服务</LinkButton>
@@ -46,14 +96,18 @@ const Container = styled.div`
   left: 0;
   right: 0;
   height: 60px;
-  padding: 15px 25px;
-  background-color: rgba(250, 250, 250, 0.9);
+  padding: 0 25px;
+  box-shadow: 0 5px 8px 0 rgb(64 106 103 / 13%);
+  background: rgba(255, 255, 255, 0.95);
+  z-index: 99;
 `;
 const FlexCell = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   width: 100%;
+  height: 60px;
+
   > img:nth-of-type(1) {
     width: 123px;
     height: 31px;
@@ -105,6 +159,52 @@ const LinkButton = styled.div<{
     display: none;
   }
 `;
+const BlockCell = styled.div`
+  position: absolute;
+  left: -33%;
+  top: 58px;
+  width: 180px;
+  height: 22px;
+  display: none;
+`;
+const List = styled.div`
+  box-sizing: border-box;
+  position: absolute;
+  top: 80px;
+  left: -33%;
+  display: none;
+  flex-direction: column;
+  width: 180px;
+  background-color: #fff;
+  padding: 10px 0;
+  box-shadow: 0 1px 8px 0 rgb(0 0 0 / 20%);
+  border-radius: 3px;
+`;
+const Cell = styled.div`
+  display: block;
+  color: #474b51;
+  text-align: center;
+  font-weight: 400;
+  font-size: 14px;
+  line-height: 32px;
+  border-radius: 5px;
+  span {
+    position: relative;
+    ::after {
+      position: absolute;
+      right: -30px;
+      top: -15px;
+      content: "Hot!";
+      font-size: 12px;
+      color: #f00;
+      font-weight: 600;
+      transform: scale(0.8);
+    }
+  }
+  :hover {
+    background: #f4f6f9;
+  }
+`;
 const PlainButton = styled.div`
   display: inline-block;
   line-height: 30px;
@@ -126,6 +226,7 @@ const TextButton = styled.div<{
   line-height: 30px;
   font-size: 14px;
   color: ${themeColor};
+  cursor: pointer;
   @media (min-width: 1200px) {
     display: ${(props) => (props.min ? "none" : "inline-block")};
   }

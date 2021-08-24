@@ -5,6 +5,7 @@ import { swiperList } from "./data";
 
 export default function Swiper() {
   const [index, setIndex] = useState(0);
+
   return (
     <Container>
       <TitleH2>零代码搭建灵活易用，满足个性化管理需求</TitleH2>
@@ -12,18 +13,35 @@ export default function Swiper() {
         <TabLeft>
           {swiperList.map((item, idx) => {
             return (
-              <TabCell key={item.name} light={index == idx}>
+              <TabCell
+                key={item.name}
+                light={index == idx}
+                onClick={() => {
+                  setIndex(idx);
+                }}
+              >
                 <i className={"iconfont " + item.icon}></i>
                 {item.name}
               </TabCell>
             );
           })}
         </TabLeft>
-        <TabRight index={index}>
+        <TabRight
+          index={index}
+          aimgWidth={swiperList[index].data.a.imgWidth}
+          bimgWidth={swiperList[index].data.b.imgWidth}
+        >
           <img src={swiperList[index].data.img} />
-          <img src={swiperList[index].data.a.url} />
-          <img src={swiperList[index].data.b.url} />
-          <span>{swiperList[index].data.content}</span>
+          {swiperList[index].data.a.url && (
+            <img src={swiperList[index].data.a.url} />
+          )}
+          {swiperList[index].data.b.url && (
+            <img src={swiperList[index].data.b.url} />
+          )}
+          <div>
+            <span>{swiperList[index].data.content}</span>
+            <span>查看详情</span>
+          </div>
         </TabRight>
       </TabBox>
     </Container>
@@ -55,6 +73,8 @@ const TabLeft = styled.div`
 
 const TabRight = styled.div<{
   index: number;
+  aimgWidth: number;
+  bimgWidth: number;
 }>`
   width: 730px;
   display: flex;
@@ -63,24 +83,24 @@ const TabRight = styled.div<{
   position: relative;
   @keyframes amove {
     0% {
-      top: ${(props) => swiperList[props.index].data.a.top};
+      transform: translateY(0);
     }
     50% {
-      top: ${(props) => swiperList[props.index].data.a.top + 10 + "px"};
+      transform: translateY(10px);
     }
     100% {
-      top: ${(props) => swiperList[props.index].data.a.top};
+      transform: translateY(0);
     }
   }
   @keyframes bmove {
     0% {
-      top: ${(props) => swiperList[props.index].data.b.top};
+      transform: translateY(0);
     }
     50% {
-      top: ${(props) => swiperList[props.index].data.b.top + 10 + "px"};
+      transform: translateY(-10px);
     }
     100% {
-      top: ${(props) => swiperList[props.index].data.b.top};
+      transform: translateY(0);
     }
   }
 
@@ -93,7 +113,7 @@ const TabRight = styled.div<{
     top: ${(props) => swiperList[props.index].data.b.top + "px"};
     left: ${(props) => swiperList[props.index].data.b.left + "px"};
     z-index: ${(props) => swiperList[props.index].data.b.zIndex};
-    width: 120px;
+    width: ${(props) => `${props.bimgWidth}px`};
     animation: bmove 3s infinite;
   }
   img:nth-of-type(3) {
@@ -101,14 +121,22 @@ const TabRight = styled.div<{
     top: ${(props) => swiperList[props.index].data.a.top + "px"};
     left: ${(props) => swiperList[props.index].data.a.left + "px"};
     z-index: ${(props) => swiperList[props.index].data.a.zIndex};
-    width: 120px;
+    width: ${(props) => `${props.aimgWidth}px`};
     animation: amove 3s infinite;
   }
-  span {
+  span:nth-of-type(1) {
     font-size: 16px;
     font-weight: 400;
     color: #5e6d82;
     line-height: 22px;
+  }
+  span:nth-of-type(2) {
+    font-size: 16px;
+    font-weight: 400;
+    color: ${themeColor};
+    line-height: 22px;
+    margin-left: 20px;
+    cursor: pointer;
   }
 `;
 
@@ -118,17 +146,19 @@ const TabCell = styled.div<{
   color: ${(props) => (props.light ? themeColor : "#5e6d82")};
   font-size: 20px;
   line-height: 64px;
-  padding-left: 58px;
-  text-align: left;
+  padding-left: 100px;
+  text-align: center;
   cursor: pointer;
   display: flex;
   align-items: center;
   position: relative;
   margin-bottom: 15px;
+  box-shadow: ${(props) =>
+    props.light ? "0 0 8px 0 rgb(64 106 103 / 13%)" : ""};
 
   .iconfont {
     position: absolute;
-    left: 15px;
+    left: 60px;
     font-size: 22px;
     color: ${(props) => (props.light ? themeColor : "#c3cdda")};
   }
