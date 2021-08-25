@@ -113,7 +113,7 @@ const PhoneInput = styled.input`
   height: 36px;
   font-weight: 400;
   color: #1f2d3d;
-  background-image: url(https://blog-assets.jiandaoyun.com/index/outsourcing/2020jdy-iphone.png);
+  background-image: url("https://blog-assets.jiandaoyun.com/index/outsourcing/2020jdy-iphone.png");
   background-size: 12px;
   background-repeat: no-repeat;
   background-position: 15px center;

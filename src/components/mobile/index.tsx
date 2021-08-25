@@ -1,5 +1,6 @@
 import styled from "@emotion/styled";
 import React, { useState } from "react";
+import Footer from "./footer";
 import Banner from "./banner";
 import BottomBox from "./bottom-box";
 import Card from "./card";
@@ -26,6 +27,7 @@ export default function Mobile() {
       <Banner></Banner>
       <Logo></Logo>
       <BottomBox></BottomBox>
+      <Footer></Footer>
     </Container>
   );
 }

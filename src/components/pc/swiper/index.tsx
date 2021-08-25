@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React, { useState } from "react";
-import { themeColor } from "../../common/style";
+import { themeColor } from "../../../common/style";
 import { swiperList } from "./data";
 
 export default function Swiper() {

@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React, { useEffect, useState } from "react";
-import { themeColor } from "../../common/style";
+import { themeColor } from "../../../common/style";
 
 export default function TextAuto() {
   const [index, setIndex] = useState(0);

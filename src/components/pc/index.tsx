@@ -1,13 +1,13 @@
 import styled from "@emotion/styled";
 import React, { useState } from "react";
-import Banner from "../banner";
-import BottomBox from "../bottom-box";
-import Card from "../card";
-import Footer from "../footer";
-import Logo from "../logo";
-import Scheme from "../scheme";
-import Swiper from "../swiper";
-import TextAuto from "../text-auto";
+import Banner from "./banner";
+import BottomBox from "./bottom-box";
+import Card from "./card";
+import Footer from "./footer";
+import Logo from "./logo";
+import Scheme from "./scheme";
+import Swiper from "./swiper";
+import TextAuto from "./text-auto";
 
 export default function Pc() {
   const [show, setShow] = useState(true);

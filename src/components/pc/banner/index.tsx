@@ -1,6 +1,6 @@
 import styled from "@emotion/styled";
 import React, { useEffect, useRef, useState } from "react";
-import { themeColor } from "../../common/style";
+import { themeColor } from "../../../common/style";
 import { bannerData } from "./data";
 
 const Banner = () => {
