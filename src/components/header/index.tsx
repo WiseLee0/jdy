@@ -80,7 +80,7 @@ export default function Header() {
               style={{ marginLeft: "5px" }}
             ></i>
           </TextButton>
-          <TextButton min>
+          <TextButton min="true">
             <i className="iconfont icon-caidan"></i>
           </TextButton>
         </div>
@@ -221,17 +221,17 @@ const PlainButton = styled.div`
   }
 `;
 const TextButton = styled.div<{
-  min?: boolean;
+  min?: string;
 }>`
   line-height: 30px;
   font-size: 14px;
   color: ${themeColor};
   cursor: pointer;
   @media (min-width: 1200px) {
-    display: ${(props) => (props.min ? "none" : "inline-block")};
+    display: ${(props) => (props.min == "true" ? "none" : "inline-block")};
   }
   @media not all and (min-width: 1200px) {
-    display: ${(props) => (props.min ? "inline-block" : "none")};
+    display: ${(props) => (props.min == "true" ? "inline-block" : "none")};
     color: #333;
   }
 `;

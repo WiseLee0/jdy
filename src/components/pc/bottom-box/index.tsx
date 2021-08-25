@@ -6,8 +6,8 @@ const BottomBox = () => {
     <Container>
       <p>现在注册领取高级功能试用</p>
       <div>
-        <input type="text" id="phoneBottom" placeholder="输入手机号" />
-        <input type="button" id="registerBottom" value="免费体验" />
+        <input type="text" placeholder="输入手机号" />
+        <input type="button" value="免费体验" />
       </div>
     </Container>
   );
