@@ -39,7 +39,7 @@ const TitleH2 = styled.div`
   font-weight: 600;
 `;
 const CellGroup = styled.div`
-  width: 354px;
+  width: 90%;
   display: flex;
   flex-direction: column;
   margin: 40px 0;
@@ -59,6 +59,7 @@ const Cell = styled.div`
   display: flex;
   flex-direction: column;
   margin-bottom: 20px;
+  box-shadow: 0 0px 18px 0 rgb(64 106 103 / 13%);
 `;
 const CellTitle = styled.div<{
   color: string;

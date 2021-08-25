@@ -41,7 +41,7 @@ const Container = styled.div`
   @media (min-width: 1200px) {
     display: block;
   }
-  @media not all and (min-width: 450px) {
+  @media not all and (min-width: 1200px) {
     display: none;
   }
 `;

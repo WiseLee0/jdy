@@ -28,6 +28,7 @@ const FooterCell = ({ title, data, tip }: Props) => {
 const Container = styled.div`
   display: flex;
   flex-direction: column;
+  max-width: 480px;
   > span:nth-of-type(1) {
     font-size: 14px;
     padding-bottom: 10px;

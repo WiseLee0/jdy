@@ -62,7 +62,7 @@ const TitleH2 = styled.div`
 `;
 const CellGroup = styled.div`
   box-sizing: border-box;
-  width: 375px;
+  width: 100%;
   height: 320px;
   display: flex;
   flex-direction: column;
@@ -96,14 +96,14 @@ const Scroll = styled.div<{
   index: number;
 }>`
   transform: ${(p) => {
-    const distance = p.index * 350;
+    const distance = p.index * (window.innerWidth - 80);
     return `translateX(-${distance}px)`;
   }};
   transition: all 0.5s;
   display: flex;
 `;
 const Card = styled.div`
-  width: 350px;
+  width: calc(100vw - 80px);
   flex-shrink: 0;
 `;
 const Content = styled.div`

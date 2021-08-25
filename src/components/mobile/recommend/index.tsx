@@ -107,7 +107,7 @@ const PhoneInput = styled.input`
   border: 0;
   outline: 0;
   box-sizing: border-box;
-  width: 260px;
+  width: 100%;
   font-size: 14px;
   padding-left: 45px;
   height: 36px;

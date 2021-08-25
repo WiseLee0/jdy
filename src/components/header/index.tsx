@@ -1,70 +1,53 @@
 import styled from "@emotion/styled";
-import React from "react";
+import React, { useState } from "react";
 import { themeColor } from "../../common/style";
+import { navData } from "./data";
+import Slieder from "./slider";
 
 export default function Header() {
-  const onMouseEnter = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const dom = e.currentTarget as HTMLDivElement;
-    const blank = dom.children[1] as HTMLDivElement;
-    const list = dom.children[2] as HTMLDivElement;
-    blank.style.display = "block";
-    list.style.display = "flex";
+  const [show, setShow] = useState(false);
+  const [list, setList] = useState(navData);
+  const onMouseEnter = (index: number) => {
+    if (list[index].show == undefined) return;
+    list[index].show = true;
+    setList([...list]);
   };
-  const onMouseLeave = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
-    const dom = e.currentTarget as HTMLDivElement;
-    const blank = dom.children[1] as HTMLDivElement;
-    const list = dom.children[2] as HTMLDivElement;
-    blank.style.display = "none";
-    list.style.display = "none";
+  const onMouseLeave = (index: number) => {
+    if (list[index].show == undefined) return;
+    list[index].show = false;
+    setList([...list]);
   };
   return (
     <Container>
       <FlexCell>
         <img src="https://blog-assets.jiandaoyun.com/index/logo-pure.png" />
         <div>
-          <LinkButton light>首页</LinkButton>
-          <LinkButton
-            arrow
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-          >
-            <span>产品功能</span>
-            <BlockCell></BlockCell>
-            <List>
-              <Cell>在线表单</Cell>
-              <Cell>流程引擎</Cell>
-              <Cell>仪表盘</Cell>
-              <Cell>知识库</Cell>
-              <Cell>团队协作</Cell>
-            </List>
-          </LinkButton>
-          <LinkButton
-            arrow
-            onMouseEnter={onMouseEnter}
-            onMouseLeave={onMouseLeave}
-          >
-            <span>行业案例</span>
-            <BlockCell></BlockCell>
-            <List>
-              <Cell>
-                <span>CRM</span>
-              </Cell>
-              <Cell>
-                <span>疫情防控</span>
-              </Cell>
-              <Cell>进销存</Cell>
-              <Cell>项目管理</Cell>
-              <Cell>供应商管理</Cell>
-              <Cell>设备管理</Cell>
-              <Cell>
-                <span>更多方案</span>
-              </Cell>
-            </List>
-          </LinkButton>
-          <LinkButton>定价</LinkButton>
-          <LinkButton>定制</LinkButton>
-          <LinkButton>学习与服务</LinkButton>
-          <LinkButton>关于我们</LinkButton>
+          {list.map((data, index) => (
+            <LinkButton
+              key={index}
+              arrow={data.arrow}
+              onMouseEnter={() => onMouseEnter(index)}
+              onMouseLeave={() => onMouseLeave(index)}
+              light={data.light}
+            >
+              <span key={index}>{data.name}</span>
+              {data.data && data.show && (
+                <>
+                  <BlockCell key={index}></BlockCell>
+                  <List key={index}>
+                    {data.data.map((item, idx) => (
+                      <Cell key={idx}>
+                        <span>
+                          {item.name}
+                          <span>{item.char}</span>
+                        </span>
+                      </Cell>
+                    ))}
+                  </List>
+                </>
+              )}
+            </LinkButton>
+          ))}
         </div>
         <div>
           <PlainButton>登录</PlainButton>
@@ -81,10 +64,14 @@ export default function Header() {
             ></i>
           </TextButton>
           <TextButton min="true">
-            <i className="iconfont icon-caidan"></i>
+            <i
+              className="iconfont icon-caidan"
+              onClick={() => setShow(true)}
+            ></i>
           </TextButton>
         </div>
       </FlexCell>
+      {show && <Slieder onClose={() => setShow(false)}></Slieder>}
     </Container>
   );
 }
@@ -126,7 +113,7 @@ const FlexCell = styled.div`
   }
 `;
 const LinkButton = styled.div<{
-  arrow?: boolean;
+  arrow?: string;
   light?: boolean;
 }>`
   padding: 19px 15px;
@@ -134,7 +121,10 @@ const LinkButton = styled.div<{
   color: ${(props) => (props.light ? themeColor : "#444")};
   cursor: pointer;
   position: relative;
-  margin-right: ${(props) => (props.arrow ? "20px" : "0")};
+  margin-right: ${(props) => (props.arrow ? "10px" : "0")};
+  @media (min-width: 1460px) {
+    margin-right: ${(props) => (props.arrow ? "20px" : "20px")};
+  }
   :hover {
     color: ${themeColor};
   }
@@ -165,14 +155,12 @@ const BlockCell = styled.div`
   top: 58px;
   width: 180px;
   height: 22px;
-  display: none;
 `;
 const List = styled.div`
   box-sizing: border-box;
   position: absolute;
   top: 80px;
   left: -33%;
-  display: none;
   flex-direction: column;
   width: 180px;
   background-color: #fff;
@@ -188,13 +176,12 @@ const Cell = styled.div`
   font-size: 14px;
   line-height: 32px;
   border-radius: 5px;
-  span {
+  > span {
     position: relative;
-    ::after {
+    > span {
       position: absolute;
-      right: -30px;
+      right: -32px;
       top: -15px;
-      content: "Hot!";
       font-size: 12px;
       color: #f00;
       font-weight: 600;
